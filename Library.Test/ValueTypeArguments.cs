@@ -27,9 +27,17 @@ namespace Library.Test {
             _component.DoStuff();
 
             // Assert
+            // passes
+            _fooService.Received()
+                .DoStuff(Arg.Is<PlainValueArgument>(
+                    e => e.X == 3 && e.Y == 7));
+
+            /*
+            // fails
             _fooService.Received()
                 .DoStuff(Arg.Is<PlainValueArgument>(
                     e => e.X == 100 && e.Y == 200));
+            // */
         }
 
         [Fact]
@@ -42,26 +50,40 @@ namespace Library.Test {
             // Assert
             _fooService.Received()
                 .DoStuff(Arg.Is<StringableValueArgument>(
+                    e => e.X == 3 && e.Y == 7));
+
+            /*
+            // fails
+            _fooService.Received()
+                .DoStuff(Arg.Is<StringableValueArgument>(
                     e => e.X == 100 && e.Y == 200));
+            // */
         }
 
         [Fact]
-        public void Checking_eqatable_argument_using_Arg_Is() {
-            // Arrange
-
-            // Act
-            _component.DoStuff();
-
-            // Assert
-
+        public void Checking_equatable_argument_using_Arg_Is() {
             // Value types are equatable by default - yay!
 
+            // Arrange
+
+            // Act
+            _component.DoStuff();
+
+            // Assert
+            
+            // passes
+            _fooService.Received()
+                .DoStuff(Arg.Is(new StringableValueArgument(3, 7)));
+            
+            /*
+            // fails
             _fooService.Received()
                 .DoStuff(Arg.Is(new StringableValueArgument(100, 200)));
+            // */
         }
 
         [Fact]
-        public void Catch_argument_and_check_manually_with_fluent_assertions() {
+        public void Catching_argument_and_checking_manually_with_fluent_assertions() {
             // Arrange
             PlainValueArgument arg = default;
             
@@ -75,13 +97,19 @@ namespace Library.Test {
             _fooService.Received()
                 .DoStuff(Arg.Any<PlainValueArgument>());
 
-            // Manuall checking to error prone and usually not worth it
+            // passes
+            arg.Should()
+                .BeEquivalentTo(new PlainValueArgument(3, 7));        
+
+            /*
+            // fails
             arg.Should()
                 .BeEquivalentTo(new PlainValueArgument(100, 200));        
+            // */
         }
 
         [Fact]
-        public void Catch_argument_and_check_manually_with_nfluent() {
+        public void Catching_argument_and_checking_manually_with_nfluent() {
             // Arrange
             PlainValueArgument arg = default;
             
@@ -95,12 +123,20 @@ namespace Library.Test {
             _fooService.Received()
                 .DoStuff(Arg.Any<PlainValueArgument>());
 
+                
+            // passes
+            Check.That(arg).HasFieldsWithSameValues(
+                new PlainValueArgument(3, 7));
+
+            /*
+            // fails
             Check.That(arg).HasFieldsWithSameValues(
                 new PlainValueArgument(100, 200));        
+            // */
         }
         
         [Fact]
-        public void Catch_argument_and_check_manually_with_nfluent_and_syntactic_sugar() {
+        public void Catching_argument_and_checking_manually_with_nfluent_and_syntactic_sugar() {
             // Arrange
             _fooService
                 .DoStuff(Capture(out Arg<PlainValueArgument> arg));
@@ -112,8 +148,15 @@ namespace Library.Test {
             _fooService.Received()
                 .DoStuff(Arg.Any<PlainValueArgument>());
 
+            // passes
+            Check.That(arg.Value).HasFieldsWithSameValues(
+                new PlainValueArgument(3, 7));
+
+            /*
+            // fails
             Check.That(arg.Value).HasFieldsWithSameValues(
                 new PlainValueArgument(100, 200));        
+            // */
         }
     }
 }

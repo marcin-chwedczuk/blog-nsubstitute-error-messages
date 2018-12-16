@@ -237,9 +237,3 @@ namespace Library.Test {
         }
     }
 }
-
-
-/* TODO
-    -structs
-    -where is wooly feeling when looking for props with diff
-                // Manuall checking to error prone and usually not worth it*/
