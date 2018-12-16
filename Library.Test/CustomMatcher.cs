@@ -56,9 +56,9 @@ namespace Library {
         }
     }
 
-    public static class ArgEx
+    public static class WithArg
     {
-        public static T Equivalent<T>(T obj)
+        public static T EquivalentTo<T>(T obj)
         {
             SubstitutionContext.Current.EnqueueArgumentSpecification(
                 new ArgumentSpecification(typeof(T), new EquivalentArgumentMatcher<T>(obj)));

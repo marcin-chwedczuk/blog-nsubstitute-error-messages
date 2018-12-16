@@ -4,6 +4,9 @@ using Xunit;
 using FluentAssertions;
 using NFluent;
 
+// Import static methods from ArgCapture
+using static Library.Test.ArgCapture;
+
 namespace Library.Test {
     public class ValueTypeArguments {
         private readonly IFooService _fooService;
@@ -111,20 +114,6 @@ namespace Library.Test {
 
             Check.That(arg.Value).HasFieldsWithSameValues(
                 new PlainValueArgument(100, 200));        
-        }
-
-        // Better to not do this in production code ;)
-        private static T Capture<T>(out Arg<T> tmp) {
-            var valueHolder = new Arg<T>();
-
-            T value = Arg.Do<T>(x => valueHolder.Value = x);
-            
-            tmp = valueHolder;
-            return value;
-        }
-
-        private class Arg<T> {
-            public T Value = default;
         }
     }
 }
